@@ -51,3 +51,4 @@ def getConstructorStandingPoints(raceId, constructorId, constructorStandingsCSV=
                                        'points']
     
     return constructorPoints.values[0] if not constructorPoints.empty else 0
+

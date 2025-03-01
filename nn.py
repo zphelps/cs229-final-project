@@ -3,12 +3,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 # -----------------------------------------------------
 # 1. Read and split data
 # -----------------------------------------------------
-def load_data(csv_path):
+def load_data(csv_path="cleaned/results2.csv"):
     """
     Reads the CSV, splits into training and test sets (year==2024 for test),
     and applies LabelEncoding for categorical fields.
@@ -19,7 +19,7 @@ def load_data(csv_path):
     df = pd.read_csv(csv_path)
     
     # Split into train/test by year
-    train_df = df[df['year'] != 2024].copy()
+    train_df = df[(df['year'] >= 2000) & (df['year'] <= 2023)].copy()
     test_df = df[df['year'] == 2024].copy()
     
     # We will encode driverId, circuitId, constructorId as categorical
@@ -37,6 +37,16 @@ def load_data(csv_path):
         
         encoders[col] = le
     
+    # Add StandardScaler for numeric columns
+    numeric_cols = ['year', 'round', 'grid', 'driver_points', 'constructor_points', 'driver_wins', 'constructor_wins']
+    scaler = StandardScaler()
+    scaler.fit(train_df[numeric_cols])
+    train_df[numeric_cols] = scaler.transform(train_df[numeric_cols])
+    test_df[numeric_cols] = scaler.transform(test_df[numeric_cols])
+
+    train_df['label'] = train_df['position'].isin(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]).astype(float)
+    test_df['label'] = test_df['position'].isin(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]).astype(float)
+    
     return train_df, test_df, encoders
 
 # -----------------------------------------------------
@@ -48,9 +58,9 @@ class F1Dataset(Dataset):
       - driverId (encoded integer)
       - constructorId (encoded integer)
       - circuitId (encoded integer)
-      - year, round, grid, position, points_driver, points_constructor, ...
+      - year, round, grid, position, driver_points, constructor_points, ...
     
-    The label is derived from position (1 => 1, otherwise => 0).
+    The label is derived from position (1-3 => 1, otherwise => 0).
     """
     def __init__(self, df):
         super().__init__()
@@ -61,12 +71,16 @@ class F1Dataset(Dataset):
         self.circuit_ids = torch.tensor(self.df['circuitId'].values, dtype=torch.long)
         self.constructor_ids = torch.tensor(self.df['constructorId'].values, dtype=torch.long)
         
-        # Updated numeric columns (exclude points to avoid data leakage)
-        num_cols = ['round', 'grid']  # Removed 'points_driver', 'points_constructor'
+        # Updated numeric columns
+        num_cols = ['year', 'round', 'grid', 'driver_points', 'constructor_points', 'driver_wins', 'constructor_wins']
         self.numerics = torch.tensor(self.df[num_cols].values, dtype=torch.float)
         
-        # Create label from 'position': label = 1 if position==1 else 0
-        self.labels = torch.tensor((self.df['position'] == 1).astype(float).values, dtype=torch.float)
+        # Create label from 'position': label = 1 if position in ["1", "2", "3"] else 0
+        # self.labels = torch.tensor(self.df['position'].isin(["1", "2", "3"]).astype(float).values, dtype=torch.float)
+         # Now label is always from the 'label' column
+        if 'label' not in self.df.columns:
+            raise ValueError("No 'label' column found in the dataframe.")
+        self.labels = torch.tensor(self.df['label'].values, dtype=torch.float)
         
     def __len__(self):
         return len(self.df)
@@ -91,8 +105,9 @@ class F1Predictor(nn.Module):
                  embedding_dim_driver=8,
                  embedding_dim_circuit=4,
                  embedding_dim_constructor=4,
-                 num_numeric=2,  # round, grid, points_driver, points_constructor
-                 hidden_dim=32):
+                 num_numeric=7,  # year, round, grid, driver_points, constructor_points, driver_wins, constructor_wins
+                 hidden_dim=32,
+                 dropout=0.3):
         super().__init__()
         
         # Embeddings
@@ -104,11 +119,23 @@ class F1Predictor(nn.Module):
         total_emb_dim = embedding_dim_driver + embedding_dim_circuit + embedding_dim_constructor
         
         # A simple feed-forward network
+        # self.fc1 = nn.Linear(total_emb_dim + num_numeric, hidden_dim)
+        # self.fc2 = nn.Linear(hidden_dim, hidden_dim)
+        # self.fc3 = nn.Linear(hidden_dim, 1)
+        
+        # self.relu = nn.ReLU()
+
+        # Deeper network with dropout
         self.fc1 = nn.Linear(total_emb_dim + num_numeric, hidden_dim)
+        self.dropout1 = nn.Dropout(dropout)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-        self.fc3 = nn.Linear(hidden_dim, 1)
+        self.dropout2 = nn.Dropout(dropout)
+        self.fc3 = nn.Linear(hidden_dim, hidden_dim // 2)
+        self.fc4 = nn.Linear(hidden_dim // 2, 1)
         
         self.relu = nn.ReLU()
+        self.bn1 = nn.BatchNorm1d(hidden_dim)
+        self.bn2 = nn.BatchNorm1d(hidden_dim)
         
     def forward(self, driver_id, circuit_id, constructor_id, numeric_features):
         # Embed the categorical features
@@ -119,11 +146,19 @@ class F1Predictor(nn.Module):
         # Concatenate embeddings + numeric features
         x = torch.cat([d_emb, c_emb, cons_emb, numeric_features], dim=1)
         
-        # MLP forward
-        x = self.relu(self.fc1(x))
-        x = self.relu(self.fc2(x))
-        # Output layer (logits)
-        logits = self.fc3(x)
+        # # MLP forward
+        # x = self.relu(self.fc1(x))
+        # x = self.relu(self.fc2(x))
+        # # Output layer (logits)
+        # logits = self.fc3(x)
+        
+        # MLP forward with dropout and batch normalization
+        x = self.relu(self.bn1(self.fc1(x)))
+        x = self.dropout1(x)
+        x = self.relu(self.bn2(self.fc2(x)))
+        x = self.dropout2(x)
+        x = self.relu(self.fc3(x))
+        logits = self.fc4(x)
         
         return logits.view(-1)
 
@@ -159,7 +194,10 @@ def evaluate(model, dataloader, criterion, device):
     model.eval()
     total_loss = 0.0
     correct = 0
-    
+    TP = 0
+    FP = 0
+    FN = 0
+
     with torch.no_grad():
         for (driver_id, circuit_id, constructor_id, numeric_feats), labels in dataloader:
             driver_id = driver_id.to(device)
@@ -172,20 +210,33 @@ def evaluate(model, dataloader, criterion, device):
             loss = criterion(outputs, labels)
             total_loss += loss.item() * labels.size(0)
             
-            # For binary classification, threshold at 0.5
             preds = (torch.sigmoid(outputs) >= 0.5).float()
             correct += (preds == labels).sum().item()
+
+            # print("--------------------------------")
+            # print(f"{preds.tolist()}\n{labels.tolist()}")
+
+            # Count true positives, false positives, and false negatives
+            TP += ((preds == 1) & (labels == 1)).sum().item()
+            FP += ((preds == 1) & (labels == 0)).sum().item()
+            FN += ((preds == 0) & (labels == 1)).sum().item()
     
     avg_loss = total_loss / len(dataloader.dataset)
     accuracy = correct / len(dataloader.dataset)
-    return avg_loss, accuracy
+    
+    # Compute precision, recall, and f1
+    precision = TP / (TP + FP + 1e-8)
+    recall = TP / (TP + FN + 1e-8)
+    f1 = 2 * (precision * recall) / (precision + recall + 1e-8)
+    
+    return avg_loss, accuracy, precision, recall, f1
 
 # -----------------------------------------------------
 # 6. Main training script
 # -----------------------------------------------------
-def main(csv_path='cleaned/results.csv',
+def main(csv_path='cleaned/results2.csv',
          batch_size=32,
-         epochs=10,
+         epochs=50,
          lr=1e-3,
          embedding_dim_driver=8,
          embedding_dim_circuit=4,
@@ -194,11 +245,6 @@ def main(csv_path='cleaned/results.csv',
     
     # Load data
     train_df, test_df, encoders = load_data(csv_path)
-
-    print("Train DataFrame shape:", train_df.shape)
-    print("Test DataFrame shape:", test_df.shape)
-    print("Unique positions in train:", train_df["position"].unique())
-    print("Unique positions in test:", test_df["position"].unique())
     
     # Create datasets
     train_dataset = F1Dataset(train_df)
@@ -223,23 +269,39 @@ def main(csv_path='cleaned/results.csv',
         embedding_dim_driver=embedding_dim_driver,
         embedding_dim_circuit=embedding_dim_circuit,
         embedding_dim_constructor=embedding_dim_constructor,
-        num_numeric=2,  # We have 4 numeric features after excluding 'position'
+        num_numeric=7,  # We have 7 numeric features
         hidden_dim=hidden_dim
     ).to(device)
     
     # Define optimizer and loss
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    # optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     criterion = nn.BCEWithLogitsLoss()
+
+    # Calculate class weights to handle imbalance
+    # pos_weight = (train_df['position'].isin(["1", "2", "3"]) == False).sum() / \
+    #              (train_df['position'].isin(["1", "2", "3"])).sum()
+    
+    # # Use weighted loss
+    # criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([pos_weight]).to(device))
+    
+    # Use learning rate scheduler
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-5)
     
     # Training loop
     for epoch in range(1, epochs+1):
         train_loss = train_one_epoch(model, train_loader, optimizer, criterion, device)
-        val_loss, val_acc = evaluate(model, test_loader, criterion, device)
-        
+        val_loss, val_acc, val_prec, val_rec, val_f1 = evaluate(model, test_loader, criterion, device)
         print(f"Epoch [{epoch}/{epochs}] "
               f"Train Loss: {train_loss:.4f} | "
-              f"Test Loss: {val_loss:.4f}, Test Accuracy: {val_acc:.4f}")
-    
+              f"Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}, "
+              f"Precision: {val_prec:.4f}, Recall: {val_rec:.4f}, F1: {val_f1:.4f}")
+
+    # Once training is done, do a final evaluation on the test set:
+    final_loss, final_acc, final_prec, final_rec, final_f1 = evaluate(model, test_loader, criterion, device)
+    print("\nFinal Test Evaluation:")
+    print(f"Loss: {final_loss:.4f}, Accuracy: {final_acc:.4f}, "
+          f"Precision: {final_prec:.4f}, Recall: {final_rec:.4f}, F1: {final_f1:.4f}")
+
     # Optional: Save model
     # torch.save(model.state_dict(), "f1_win_predictor.pt")
 
