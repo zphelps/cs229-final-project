@@ -1,0 +1,562 @@
+{
+    "best_params": {
+        "hidden_dims": [
+            64,
+            32
+        ],
+        "dropout_rates": [
+            0.3,
+            0.2
+        ],
+        "learning_rate": 0.0001,
+        "batch_size": 32,
+        "weight_decay": 0.0001
+    },
+    "best_val_loss": 0.3787009445103732,
+    "all_results": [
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 32,
+                "weight_decay": 0
+            },
+            "val_loss": 0.3909300703894008,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 32,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.41423737596381793,
+            "val_accuracy": 0.884090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 64,
+                "weight_decay": 0
+            },
+            "val_loss": 0.4221389789472927,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 64,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.4197939853776585,
+            "val_accuracy": 0.8863636363636364
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 32,
+                "weight_decay": 0
+            },
+            "val_loss": 0.38535419594157827,
+            "val_accuracy": 0.8909090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 32,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.39105016751722854,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 64,
+                "weight_decay": 0
+            },
+            "val_loss": 0.3830351859331131,
+            "val_accuracy": 0.8909090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 64,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.3979746357961135,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 32,
+                "weight_decay": 0
+            },
+            "val_loss": 0.41168552528728136,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 32,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.4113430161367763,
+            "val_accuracy": 0.8863636363636364
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 64,
+                "weight_decay": 0
+            },
+            "val_loss": 0.40923676842992956,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 64,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.3830139555714347,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 32,
+                "weight_decay": 0
+            },
+            "val_loss": 0.3817190183834596,
+            "val_accuracy": 0.8909090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 32,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.3787009445103732,
+            "val_accuracy": 0.8909090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 64,
+                "weight_decay": 0
+            },
+            "val_loss": 0.3860193472016941,
+            "val_accuracy": 0.8909090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    64,
+                    32
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 64,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.40595337017015976,
+            "val_accuracy": 0.8909090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 32,
+                "weight_decay": 0
+            },
+            "val_loss": 0.4086537298831073,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 32,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.4139367973262614,
+            "val_accuracy": 0.8909090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 64,
+                "weight_decay": 0
+            },
+            "val_loss": 0.38726732243191114,
+            "val_accuracy": 0.8818181818181818
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 64,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.43176648183302446,
+            "val_accuracy": 0.8931818181818182
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 32,
+                "weight_decay": 0
+            },
+            "val_loss": 0.39232874702323567,
+            "val_accuracy": 0.8931818181818182
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 32,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.3810130693695762,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 64,
+                "weight_decay": 0
+            },
+            "val_loss": 0.39460094002160157,
+            "val_accuracy": 0.884090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.2,
+                    0.1
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 64,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.38650456992062654,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 32,
+                "weight_decay": 0
+            },
+            "val_loss": 0.42560655826872046,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 32,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.4170362971045754,
+            "val_accuracy": 0.884090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 64,
+                "weight_decay": 0
+            },
+            "val_loss": 0.42094986140727997,
+            "val_accuracy": 0.8818181818181818
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.001,
+                "batch_size": 64,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.4128731689669869,
+            "val_accuracy": 0.884090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 32,
+                "weight_decay": 0
+            },
+            "val_loss": 0.385973889448426,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 32,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.38256367986852474,
+            "val_accuracy": 0.8886363636363637
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 64,
+                "weight_decay": 0
+            },
+            "val_loss": 0.39315640980547123,
+            "val_accuracy": 0.8909090909090909
+        },
+        {
+            "params": {
+                "hidden_dims": [
+                    128,
+                    64
+                ],
+                "dropout_rates": [
+                    0.3,
+                    0.2
+                ],
+                "learning_rate": 0.0001,
+                "batch_size": 64,
+                "weight_decay": 0.0001
+            },
+            "val_loss": 0.38981394605203107,
+            "val_accuracy": 0.8886363636363637
+        }
+    ]
+}
